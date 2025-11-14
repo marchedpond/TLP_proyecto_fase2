@@ -79,10 +79,24 @@ ejecutar_prueba(
     mostrar_lexico=True
 )
 
+# 6. Estructura IF inválida
+ejecutar_prueba(
+    "Sentencia IF inválida",
+    "if(5+3) x=;$",
+    mostrar_lexico=True
+)
+
 # 7. Estructura FOR válida
 ejecutar_prueba(
     "Sentencia FOR válida",
     "for(x=0; x; x=1) x=3;$",
+    mostrar_lexico=True
+)
+
+# 7. Estructura FOR inválida
+ejecutar_prueba(
+    "Sentencia FOR inválida",
+    "for(x=0; x; x=1) x=;$",
     mostrar_lexico=True
 )
 
