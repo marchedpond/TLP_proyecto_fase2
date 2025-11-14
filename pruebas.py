@@ -1,47 +1,90 @@
-try:
-    from parser import miParser
-except ImportError:
-    print("Error: No se pudo encontrar el archivo 'mi_parser_c.py'.")
-    print("Por favor, guarda tu parser en un archivo con ese nombre.")
-    exit()
+# ------------------------------------------------------------
+# Archivo de pruebas para parser.py
+# ------------------------------------------------------------
 
-try:
-    import spacy
-    # Carga el modelo de español
-    nlp = spacy.load("es_core_news_sm")
-except ImportError:
-    print("Error: La librería 'spacy' no está instalada.")
-    print("Por favor, instálala ejecutando: pip install spacy")
-    exit()
-except IOError:
-    print("Error: El modelo de español de spaCy no está instalado.")
-    print("Por favor, instálalo ejecutando: python -m spacy download es_core_news_sm")
-    exit()
+from parser import miParser, lexer
+
+# Función auxiliar: imprime tokens generados (para debugging ordenado)
+def mostrar_tokens(cadena):
+    lexer.input(cadena)
+    print("\nTokens generados:")
+    print("------------------------------------")
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        print(f"{tok.type:15} | {tok.value}")
+    print("------------------------------------\n")
 
 
-codigo_c_valido = "int variable = 5;$"
-miParser(codigo_c_valido)
+# Función para ejecutar una prueba
+def ejecutar_prueba(nombre, cadena, mostrar_lexico=False):
+    print("\n====================================================")
+    print(f" PRUEBA: {nombre}")
+    print("====================================================")
+    print(f"Entrada: {cadena!r}")
 
-print("-------------------------------------------------\n")
+    if mostrar_lexico:
+        mostrar_tokens(cadena)
 
-frase_natural_con_eof = "el perro come;$"
-miParser(frase_natural_con_eof)
+    print("Resultado del parser:")
+    print("------------------------------------")
+    resultado = miParser(cadena)
 
-print("--- PRUEBA 3: Librería NLP (spaCy) con Lenguaje Natural ---")
-# La misma frase, pero limpia (sin '$')
-frase_natural_limpia = "el perro come"
-print(f"Input: '{frase_natural_limpia}'")
+    if resultado == 1:
+        print(">>>CADENA ACEPTADA por el parser")
+    else:
+        print(">>>ERROR: La cadena NO es válida según la gramática")
 
-# Procesar la frase con spaCy
-doc = nlp(frase_natural_limpia)
+    print("====================================================\n")
 
-print("\nResultado de spaCy (SÍ funciona y entiende la estructura):")
-print(f"{'Palabra':<10} | {'Categoría (POS)':<15} | {'Dependencia (DEP)':<15}")
-print("-" * 44)
-for token in doc:
-    print(f"{token.text:<10} | {token.pos_:<15} | {token.dep_:<15}")
 
-print("\n[NOTA DE ANÁLISIS]: spaCy procesa la frase correctamente.")
-print("Identifica cada palabra y su función gramatical,")
-print("demostrando la robustez de las herramientas modernas de NLP.")
-print("-------------------------------------------------\n")
+# ------------------------------------------------------------
+# LISTA DE PRUEBAS
+# ------------------------------------------------------------
+
+# 1. Declaración válida
+ejecutar_prueba(
+    "Declaración válida",
+    "int variable = 5;$",
+    mostrar_lexico=True
+)
+
+# 2. Código inválido (lenguaje natural con eof)
+ejecutar_prueba(
+    "Frase en lenguaje natural con EOF",
+    "el perro come;$",
+    mostrar_lexico=True
+)
+
+# 3. Declaración con varias variables
+ejecutar_prueba(
+    "Declaración múltiple",
+    "float a, b, c = 9;$",
+    mostrar_lexico=True
+)
+
+
+# 5. Expresión con operadores
+ejecutar_prueba(
+    "Expresión matemática",
+    "int x = (5 + 3) * 2;$",
+    mostrar_lexico=True
+)
+
+# 6. Estructura IF válida
+ejecutar_prueba(
+    "Sentencia IF válida",
+    "if(5+3) x=1;$",
+    mostrar_lexico=True
+)
+
+# 7. Estructura FOR válida
+ejecutar_prueba(
+    "Sentencia FOR válida",
+    "for(x=0; x; x=1) x=3;$",
+    mostrar_lexico=True
+)
+
+
+print("\n\n*** PRUEBAS FINALIZADAS ***\n")
