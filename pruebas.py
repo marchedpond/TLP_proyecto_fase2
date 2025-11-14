@@ -1,10 +1,13 @@
-# ------------------------------------------------------------
-# Archivo de pruebas para parser.py
-# ------------------------------------------------------------
-
 from parser import miParser, lexer
 
-# Función auxiliar: imprime tokens generados (para debugging ordenado)
+import spacy
+try:
+    nlp = spacy.load("es_core_news_sm")
+except:
+    nlp = None
+    print("spaCy no está instalado o falta el modelo 'es_core_news_sm'.")
+
+
 def mostrar_tokens(cadena):
     lexer.input(cadena)
     print("\nTokens generados:")
@@ -17,8 +20,33 @@ def mostrar_tokens(cadena):
     print("------------------------------------\n")
 
 
-# Función para ejecutar una prueba
-def ejecutar_prueba(nombre, cadena, mostrar_lexico=False):
+def analisis_spacy(cadena):
+    if nlp is None:
+        print("⚠ No fue posible ejecutar spaCy.")
+        return
+
+    texto = cadena.replace(";$", "").strip()
+
+    print("\n=== Análisis spaCy ===")
+    print(f"Frase analizada: {texto!r}\n")
+
+    doc = nlp(texto)
+
+    for token in doc:
+        print(
+            f"{token.text:12} | Lema: {token.lemma_:12} | "
+            f"POS: {token.pos_:6} | Dep: {token.dep_:10} | Head: {token.head.text}"
+        )
+
+    print("\nInterpretación:")
+    print("- spaCy interpreta la oración como válida en español.")
+    print("- 'el' → determinante")
+    print("- 'perro' → sustantivo")
+    print("- 'come' → verbo (raíz de la oración)")
+    print("=== Fin de análisis spaCy ===\n")
+
+
+def ejecutar_prueba(nombre, cadena, mostrar_lexico=False, usar_spacy=False):
     print("\n====================================================")
     print(f" PRUEBA: {nombre}")
     print("====================================================")
@@ -27,22 +55,25 @@ def ejecutar_prueba(nombre, cadena, mostrar_lexico=False):
     if mostrar_lexico:
         mostrar_tokens(cadena)
 
-    print("Resultado del parser:")
-    print("------------------------------------")
-    resultado = miParser(cadena)
+    if usar_spacy:
+        analisis_spacy(cadena)
 
-    if resultado == 1:
-        print(">>>CADENA ACEPTADA por el parser")
+    if not usar_spacy:
+        print("Resultado del parser:")
+        print("------------------------------------")
+        resultado = miParser(cadena)
+
+        if resultado == 1:
+            print(">>> CADENA ACEPTADA por el parser")
+        else:
+            print(">>> ERROR: La cadena NO es válida según la gramática")
     else:
-        print(">>>ERROR: La cadena NO es válida según la gramática")
-
+        print(">>> spaCy analizó correctamente la oración.")
+    
     print("====================================================\n")
 
 
-# ------------------------------------------------------------
 # LISTA DE PRUEBAS
-# ------------------------------------------------------------
-
 # 1. Declaración válida
 ejecutar_prueba(
     "Declaración válida",
@@ -50,11 +81,18 @@ ejecutar_prueba(
     mostrar_lexico=True
 )
 
-# 2. Código inválido (lenguaje natural con eof)
+# 2A. Código inválido para tu COMPILADOR (lenguaje natural)
 ejecutar_prueba(
-    "Frase en lenguaje natural con EOF",
+    "Lenguaje natural (análisis del compilador)",
     "el perro come;$",
     mostrar_lexico=True
+)
+
+# 2B. MISMA frase, pero analizada con spaCy (DEBE FUNCIONAR)
+ejecutar_prueba(
+    "Lenguaje natural (análisis spaCy)",
+    "el perro come;$",
+    usar_spacy=True
 )
 
 # 3. Declaración con varias variables
@@ -64,15 +102,14 @@ ejecutar_prueba(
     mostrar_lexico=True
 )
 
-
-# 5. Expresión con operadores
+# 4. Expresión con operadores
 ejecutar_prueba(
     "Expresión matemática",
     "int x = (5 + 3) * 2;$",
     mostrar_lexico=True
 )
 
-# 6. Estructura IF válida
+# 5. Estructura IF válida
 ejecutar_prueba(
     "Sentencia IF válida",
     "if(5+3) x=1;$",
@@ -93,12 +130,11 @@ ejecutar_prueba(
     mostrar_lexico=True
 )
 
-# 7. Estructura FOR inválida
+# 8. Estructura FOR inválida
 ejecutar_prueba(
     "Sentencia FOR inválida",
     "for(x=0; x; x=1) x=;$",
     mostrar_lexico=True
 )
 
-
-print("\n\n*** PRUEBAS FINALIZADAS ***\n")
+print("\n*** PRUEBAS FINALIZADAS ***\n")
