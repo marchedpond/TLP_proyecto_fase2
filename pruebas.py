@@ -137,4 +137,25 @@ ejecutar_prueba(
     mostrar_lexico=True
 )
 
+# 9. Expresión con resta
+ejecutar_prueba(
+    "Expresión con resta",
+    "int x = 10 - 5;$",
+    mostrar_lexico=True
+)
+
+# 10. Expresión con división
+ejecutar_prueba(
+    "Expresión con división",
+    "int x = 20 / 4;$",
+    mostrar_lexico=True
+)
+
+# 11. Expresión compleja con todos los operadores
+ejecutar_prueba(
+    "Expresión compleja (todos operadores)",
+    "int x = (10 + 5) * 2 - 8 / 2;$",
+    mostrar_lexico=True
+)
+
 print("\n*** PRUEBAS FINALIZADAS ***\n")
