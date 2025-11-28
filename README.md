@@ -1,3 +1,48 @@
+# Proyecto TLP - Fase 1 y Fase 2
+
+## Instalación
+
+```bash
+# 1. Crear entorno virtual (si no existe)
+python3 -m venv venv
+
+# 2. Instalar dependencias
+./venv/bin/pip install -r requirements.txt
+
+# 3. Instalar modelo de spaCy
+./venv/bin/python3 -m spacy download es_core_news_sm
+```
+
+## Ejecución
+
+```bash
+# Fase 1
+./venv/bin/python3 pruebas.py
+
+# Fase 2
+./venv/bin/python3 pruebas_fase2.py
+```
+
+**Alternativa:** Si prefieres activar el entorno virtual:
+
+```bash
+source venv/bin/activate
+python3 pruebas.py        # Fase 1
+python3 pruebas_fase2.py  # Fase 2
+```
+
+## Archivos del Proyecto
+
+- `parser.py` - Parser LL(1) para lenguaje formal (Fase 1)
+- `pruebas.py` - Pruebas de Fase 1
+- `parser_natural.py` - Parser recursivo para español (Fase 2)
+- `pruebas_fase2.py` - Pruebas de Fase 2
+- `requirements.txt` - Dependencias
+- `Proyecto Fase 1.pdf` - Informe Fase 1
+- `INFORME_FASE2.md` - Informe Fase 2
+
+---
+
 # Informe Fase 2 - Mini-parser para Lenguaje Natural Limitado
 
 ## 1. Diseño de la Gramática

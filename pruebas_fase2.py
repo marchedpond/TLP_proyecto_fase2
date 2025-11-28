@@ -12,7 +12,7 @@ try:
 except:
     nlp = None
     SPACY_DISPONIBLE = False
-    print("⚠️  spaCy no está disponible. Algunas pruebas no se ejecutarán.\n")
+    print("spaCy no está disponible. Algunas pruebas no se ejecutarán.\n")
 
 
 def analizar_con_spacy(texto):
@@ -22,7 +22,7 @@ def analizar_con_spacy(texto):
     
     doc = nlp(texto)
     
-    print("\n📊 Análisis con spaCy:")
+    print("\nAnálisis con spaCy:")
     print("=" * 60)
     print(f"Texto: '{texto}'\n")
     
@@ -35,7 +35,7 @@ def analizar_con_spacy(texto):
             f"{token.dep_:<15} {token.head.text:<10}"
         )
     
-    print("\n✅ spaCy acepta la oración como válida")
+    print("\nspaCy acepta la oración como válida")
     print("=" * 60)
     
     return doc
@@ -50,14 +50,14 @@ def ejecutar_prueba_fase2(nombre, texto, esperado_valido=True, usar_spacy=True):
     
     # Mostrar tokens generados
     tokens = tokenizar(texto)
-    print("🔤 Tokens generados:")
+    print("Tokens generados:")
     print("-" * 40)
     for token in tokens:
         print(f"  {token.tipo:<20} | '{token.valor}'")
     print()
     
     # Intentar parsear con nuestro parser
-    print("🔍 Análisis con Parser Descendente Recursivo:")
+    print("Análisis con Parser Descendente Recursivo:")
     print("-" * 40)
     
     try:
